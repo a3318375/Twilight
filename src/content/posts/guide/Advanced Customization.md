@@ -49,12 +49,12 @@ The `twilight.config.yaml` file is the heart of your blog's configuration. Here 
 
 You can add dynamic cards that link to GitHub repositories, on page load, the repository information is pulled from the GitHub API. 
 
-::github{repo="Spr-Aachen/Twilight"}
+::github{repo="a3318375/Twilight"}
 
-Create a GitHub repository card with the code `::github{repo="Spr-Aachen/Twilight"}`.
+Create a GitHub repository card with the code `::github{repo="a3318375/Twilight"}`.
 
 ```markdown
-::github{repo="Spr-Aachen/Twilight"}
+::github{repo="a3318375/Twilight"}
 ```
 
 ### Music Cards

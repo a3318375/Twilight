@@ -86,7 +86,7 @@
 
 1. **克隆仓库**
    ```bash
-   git clone https://github.com/Spr-Aachen/Twilight.git
+   git clone https://github.com/a3318375/Twilight.git
    # 切换到项目目录
    cd Twilight
    ```

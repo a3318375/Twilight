@@ -22,6 +22,6 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
 
 # Add labels for metadata
-LABEL org.opencontainers.image.source="https://github.com/Spr-Aachen/Twilight"
+LABEL org.opencontainers.image.source="https://github.com/a3318375/Twilight"
 LABEL org.opencontainers.image.description="Twilight blog Docker image"
 LABEL org.opencontainers.image.licenses="MIT"
