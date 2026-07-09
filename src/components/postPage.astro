@@ -11,9 +11,10 @@ const interval = 30;
 ---
 
 <div class="transition flex flex-col gap-3 py-1 md:py-0 md:gap-4 mb-4">
-    {page.data.map((entry: CollectionEntry<"posts">) => (
+    {page.data.map((entry: CollectionEntry<"posts">, index: number) => (
         <PostCard
             entry={entry}
+            side={index % 2 === 0 ? "right" : "left"}
             class:list="onload-animation-up"
             style={`animation-delay: ${delay++ * interval}ms;`}
         ></PostCard>

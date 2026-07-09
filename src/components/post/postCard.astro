@@ -5,6 +5,7 @@ import type { CollectionEntry } from "astro:content";
 
 import { getFileDirFromPath, getPostUrl } from "@utils/url";
 import { postConfig } from "@/config";
+import { getRandomCover } from "@utils/cover";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 import ImageWrapper from "@components/common/imageWrapper.astro";
@@ -15,6 +16,7 @@ interface Props {
     class?: string;
     entry: CollectionEntry<"posts">;
     style?: string;
+    side?: "left" | "right";
 }
 
 const className = Astro.props.class;
@@ -28,15 +30,17 @@ const {
     published,
     updated,
     description,
-    cover,
+    cover: _cover,
     tags,
     category,
     pinned,
 } = entry.data;
 
-const hasCover = cover !== undefined && cover !== null && cover !== "";
+const hasCover = _cover !== undefined && _cover !== null && _cover !== "";
 
-const coverSide = postConfig.card.cover.side;
+const cover = postConfig.randomCover?.enable ? getRandomCover(entry) : _cover;
+
+const coverSide = Astro.props.side || postConfig.card.cover.side;
 const isCoverOnRight = coverSide === "right";
 const coverWidth = postConfig.card.cover.width;
 const coverMargin = "12px";
@@ -55,12 +59,12 @@ const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(
 ---
 
 <div class:list={["card-base flex flex-col-reverse @min-[768px]:flex-col w-full rounded-(--radius-large) overflow-hidden relative @container", className]} style={style}>
-    <div class:list={["pl-6 @min-[768px]:pl-9 pr-6 @min-[768px]:pr-2 pt-6 @min-[768px]:pt-7 pb-6 relative", 
+    <div class:list={["pl-6 @min-[768px]:pl-9 pr-6 @min-[768px]:pr-2 pt-6 @min-[768px]:pt-7 pb-6 relative @min-[768px]:flex @min-[768px]:flex-col @min-[768px]:min-h-[290px]", 
         {"w-full @min-[768px]:w-[calc(100%-var(--coverWidth)-var(--coverGap))]": isCoverOnRight && renderCoverArea,
          "ml-0 @min-[768px]:ml-[calc(var(--coverWidth)+var(--coverGap))]": !isCoverOnRight && renderCoverArea}
     ]}>
         <a href={url}
-            class:list={["transition group w-full block font-bold mb-3 text-90 hover:text-(--primary) dark:hover:text-(--primary) active:text-(--title-active) dark:active:text-(--title-active) before:w-1 before:h-5 before:rounded-md before:bg-(--primary) before:absolute before:top-[35px] before:left-[18px] before:hidden @min-[768px]:before:block",
+            class:list={["transition group w-full block font-bold mb-3 text-90 hover:text-(--primary) dark:hover:text-(--primary) active:text-(--title-active) dark:active:text-(--title-active) before:w-1 before:h-5 before:rounded-md before:bg-(--primary) before:absolute before:top-[35px] before:left-[18px] before:hidden @min-[768px]:before:block @min-[768px]:line-clamp-2",
                 titleSize
             ]}
         >
@@ -70,11 +74,11 @@ const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(
         <!-- metadata -->
         <PostMetadata published={published!} updated={updated} tags={tags} category={category || undefined} hideTagsForMobile={true} hideUpdateDate={true} postUrl={url} className="mb-4"></PostMetadata>
         <!-- description -->
-        <div class:list={["transition text-75 mb-3.5 pr-4", {"line-clamp-2 @min-[768px]:line-clamp-1": !description}]}>
+        <div class:list={["transition text-75 mb-3.5 pr-4 @min-[768px]:line-clamp-3 @min-[768px]:flex-1"]}>
             { description || remarkPluginFrontmatter.excerpt }
         </div>
         <!-- word count and read time  -->
-        <div class="text-sm text-black/30 dark:text-white/30 flex gap-4 transition">
+        <div class="text-sm text-black/30 dark:text-white/30 flex gap-4 transition @min-[768px]:mt-auto">
             <div>
                 {remarkPluginFrontmatter.words} {" " + i18n(remarkPluginFrontmatter.words === 1 ? I18nKey.wordCount : I18nKey.wordsCount)}
             </div>
@@ -88,9 +92,11 @@ const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(
     {renderCoverArea && (
         <a href={url} aria-label={title} class:list={["group",
                 "max-h-[20vh] h-[20vh] @min-[768px]:max-h-none @min-[768px]:h-auto mx-4 mt-4 -mb-2 @min-[768px]:mb-0 @min-[768px]:mx-0 @min-[768px]:mt-0",
-                "@min-[768px]:w-(--coverWidth) relative @min-[768px]:absolute @min-[768px]:top-(--coverMargin) @min-[768px]:bottom-(--coverMargin) rounded-xl overflow-hidden active:scale-95",
+                "@min-[768px]:w-(--coverWidth) relative @min-[768px]:absolute @min-[768px]:top-0 @min-[768px]:bottom-0 overflow-hidden active:scale-95",
+                {"rounded-l-xl": !isCoverOnRight, "rounded-r-xl": isCoverOnRight},
                 {"@min-[768px]:right-(--coverMargin)": isCoverOnRight, "@min-[768px]:left-(--coverMargin)": !isCoverOnRight}
             ]}
+            data-cover-side={isCoverOnRight ? 'right' : 'left'}
         >
             <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition"></div>
             <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">
@@ -137,4 +143,13 @@ const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(
 </div>
 
 <style define:vars={{coverWidth, coverMargin, coverGap}}>
+    /* 封面斜边裁剪 - 仅桌面端 */
+    @media (min-width: 768px) {
+        a[data-cover-side="left"] {
+            clip-path: polygon(0 0, calc(100% - 0.75rem) 0, 100% 100%, 0 100%);
+        }
+        a[data-cover-side="right"] {
+            clip-path: polygon(0.75rem 0, 100% 0, 100% 100%, 0 100%);
+        }
+    }
 </style>
