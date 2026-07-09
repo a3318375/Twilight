@@ -374,6 +374,15 @@ export type PostConfig = {
         // 标题大小 (Tailwind 文本大小类，例如 "text-3xl")
         titleSize: string;
     };
+    // 随机封面图配置
+    randomCover?: {
+        // 启用随机封面图
+        enable: boolean;
+        // 是否覆盖文章已有的封面图（false=只在文章没有封面时使用）
+        override: boolean;
+        // 封面图列表
+        images: string[];
+    };
     // 显示"上次编辑"卡片
     showLastModified: boolean;
     // 代码高亮配置
