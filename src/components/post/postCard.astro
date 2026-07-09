@@ -5,7 +5,6 @@ import type { CollectionEntry } from "astro:content";
 
 import { getFileDirFromPath, getPostUrl } from "@utils/url";
 import { postConfig } from "@/config";
-import { getRandomCover } from "@utils/cover";
 import { i18n } from "@i18n/translation";
 import I18nKey from "@i18n/i18nKey";
 import ImageWrapper from "@components/common/imageWrapper.astro";
@@ -29,14 +28,11 @@ const {
     published,
     updated,
     description,
-    cover: _cover,
+    cover,
     tags,
     category,
     pinned,
 } = entry.data;
-
-// 随机封面图（Build 时分配，列表和详情保持一致）
-const cover = postConfig.randomCover?.enable ? getRandomCover(entry) : _cover;
 
 const hasCover = cover !== undefined && cover !== null && cover !== "";
 
@@ -95,7 +91,6 @@ const defaultCoverGradient = "linear-gradient(135deg, color-mix(in oklch, oklch(
                 "@min-[768px]:w-(--coverWidth) relative @min-[768px]:absolute @min-[768px]:top-(--coverMargin) @min-[768px]:bottom-(--coverMargin) rounded-xl overflow-hidden active:scale-95",
                 {"@min-[768px]:right-(--coverMargin)": isCoverOnRight, "@min-[768px]:left-(--coverMargin)": !isCoverOnRight}
             ]}
-            style={hasCover ? `clip-path: polygon(${isCoverOnRight ? '0.75rem' : '0'} 0, ${isCoverOnRight ? '100%' : 'calc(100% - 0.75rem)'} 0, 100% 100%, 0 100%)` : undefined}
         >
             <div class="absolute pointer-events-none z-10 w-full h-full group-hover:bg-black/30 group-active:bg-black/50 transition"></div>
             <div class="absolute pointer-events-none z-20 w-full h-full flex items-center justify-center ">

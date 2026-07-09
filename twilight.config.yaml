@@ -294,19 +294,6 @@ post:
             showDefaultCover: true
         # 标题大小 (Tailwind 文本大小类，例如 "text-3xl")
         titleSize: "text-2xl"
-    # 随机封面图配置
-    randomCover:
-        # 启用随机封面图
-        enable: true
-        # 是否覆盖文章已有的封面图（false=只在文章没有封面时使用）
-        override: false
-        # 封面图列表（文章无封面时随机分配一张）
-        images:
-            - "https://media.yuxh.cc/cover/07083745a8064eb08c6670853451ad83.png!inyaa"
-            - "https://media.yuxh.cc/cover/08630118f80a4d87a23bd9e4b5426ed2.jpg!inyaa"
-            - "https://media.yuxh.cc/cover/17251f388f1140a5b1805c7f3ad412da.png!inyaa"
-            - "https://media.yuxh.cc/cover/1b88143129a642c1b76e4e87cd78ed1a.png!inyaa"
-            - "https://media.yuxh.cc/cover/2451d140ecbf48be8bd4c72e80e406ed.jpg!inyaa"
     # 显示"上次编辑"卡片
     showLastModified: true
     # 代码高亮配置
