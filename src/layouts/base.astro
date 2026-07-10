@@ -519,7 +519,7 @@ if (typeof window !== 'undefined') {
         if (overlay) {
             overlay.classList.add('fade-out');
         }
-        // 等待 LoadingOverlay 淡出（600ms）
+        // 等待 LoadingOverlay 淡出（150ms）
         setTimeout(() => {
             if (overlay) {
                 overlay.style.display = 'none';
@@ -527,7 +527,7 @@ if (typeof window !== 'undefined') {
             if (enableBanner) {
                 // banner 开始恢复过渡：添加 banner-restoring 类（解除 CSS 中的 height: 0）
                 document.documentElement.classList.add('banner-restoring');
-                // 等待 banner 恢复过渡完成（600ms）
+                // 等待 banner 恢复过渡完成（150ms）
                 setTimeout(() => {
                     // 触发各容器淡入动画
                     document.documentElement.classList.remove('is-loading');
@@ -535,17 +535,17 @@ if (typeof window !== 'undefined') {
                     setTimeout(() => {
                         document.documentElement.classList.remove('show-initial-animation');
                         document.documentElement.classList.remove('banner-restoring');
-                    }, 1200);
-                }, 600);
+                    }, 340);
+                }, 150);
             } else {
                 // 非 banner 模式，直接触发淡入
                 document.documentElement.classList.remove('is-loading');
                 document.documentElement.classList.add('show-initial-animation');
                 setTimeout(() => {
                     document.documentElement.classList.remove('show-initial-animation');
-                }, 1200);
+                }, 340);
             }
-        }, 600);
+        }, 150);
     };
 
     const configCarrier = document.getElementById('config-carrier');
