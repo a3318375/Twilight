@@ -7,7 +7,7 @@ site:
     # 站点副标题
     subtitle: "Blog Template"
     # 语言配置
-    lang: "zh-CN"
+    lang: "zh_hans"
     # 翻译配置
     translate:
         # 启用翻译功能
