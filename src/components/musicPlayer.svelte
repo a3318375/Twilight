@@ -79,6 +79,9 @@ let errorMessage = $state("");
 let showError = $state(false);
 // 音量过渡间隔
 let fadeInterval: number | null = null;
+let isInitialized = $state(false);
+let isInitializing = $state(false);
+let initializationPromise: Promise<void> | null = null;
 
 // Lyrics State
 let lyrics: { time: number; text: string }[] = $state([]);
@@ -233,6 +236,7 @@ async function fetchMetingPlaylist() {
 
 async function toggleMode() {
     if (!musicPlayerConfig.enable) return;
+    await ensureInitialized();
     mode = mode === "meting" ? "local" : "meting";
     showPlaylist = false;
     isLoading = false;
@@ -259,8 +263,15 @@ async function toggleMode() {
     }
 }
 
-function togglePlay() {
-    if (!audio || !currentSong.url) return;
+async function togglePlay() {
+    await ensureInitialized();
+    if (!audio || !currentSong.url) {
+        if (playlist.length > 0 && !currentSong.url) {
+            shouldPlay = true;
+            restoreLastSong();
+        }
+        return;
+    }
     if (isPlaying) {
         if (fadeInterval) {
             clearInterval(fadeInterval);
@@ -283,14 +294,53 @@ function togglePlay() {
     }
 }
 
-function toggleCollapse() {
+async function ensureInitialized() {
+    if (isInitialized) return;
+    if (initializationPromise) {
+        await initializationPromise;
+        return;
+    }
+
+    initializationPromise = (async () => {
+        isInitializing = true;
+        try {
+            audio = new Audio();
+            audio.volume = volume;
+            handleAudioEvents();
+
+            if (mode === "meting") {
+                await fetchMetingPlaylist();
+            } else {
+                playlist = [...(musicPlayerConfig.local?.playlist ?? [])];
+                if (playlist.length > 0) {
+                    restoreLastSong();
+                } else {
+                    showErrorMessage(i18n(Key.musicEmptyPlaylist));
+                }
+            }
+
+            isInitialized = true;
+        } finally {
+            isInitializing = false;
+            initializationPromise = null;
+        }
+    })();
+
+    await initializationPromise;
+}
+
+async function toggleCollapse() {
+    if (isCollapsed) {
+        await ensureInitialized();
+    }
     isCollapsed = !isCollapsed;
     if (isCollapsed) {
         showPlaylist = false;
     }
 }
 
-function togglePlaylist() {
+async function togglePlaylist() {
+    await ensureInitialized();
     showPlaylist = !showPlaylist;
 }
 
@@ -339,7 +389,8 @@ function nextSong() {
     playSong(newIndex);
 }
 
-function playSong(index: number) {
+async function playSong(index: number) {
+    await ensureInitialized();
     if (index < 0 || index >= playlist.length) return;
     currentIndex = index;
     // 用户手动选择歌曲（或自动切换），标记为应该播放
@@ -601,27 +652,11 @@ onMount(() => {
         }
     }
 
-    audio = new Audio();
-    audio.volume = volume;
-    handleAudioEvents();
     interactionEvents.forEach(event => {
         document.addEventListener(event, handleUserInteraction, { capture: true });
     });
     if (!musicPlayerConfig.enable) {
         return;
-    }
-    if (mode === "meting") {
-        fetchMetingPlaylist();
-    } else {
-        // 使用本地播放列表，不发送任何API请求
-        playlist = [...(musicPlayerConfig.local?.playlist ?? [])];
-        if (playlist.length > 0) {
-            setTimeout(() => {
-                restoreLastSong();
-            }, 0);
-        } else {
-            showErrorMessage(i18n(Key.musicEmptyPlaylist));
-        }
     }
 });
 
