@@ -33,12 +33,16 @@ site:
     timeZone: 8
     # 字体配置
     font:
-        # 示例字体配置 - Zen Maru Gothic
-        "Example - ZenMaruGothic":
-            # 字体源 (字体 CSS 链接 | 字体文件路径)
-            src: "https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap"
-            # 字体名 (font-family)
-            family: "Zen Maru Gothic"
+        "MiSans Regular":
+            src: "/assets/font/MiSans-Regular.twilight-subset.woff2"
+            family: "MiSans"
+            weight: 400
+            style: "normal"
+        "MiSans Bold":
+            src: "/assets/font/MiSans-Bold.twilight-subset.woff2"
+            family: "MiSans"
+            weight: 700
+            style: "normal"
     # 主题色配置
     themeColor:
         # 主题色的默认色相 (范围从 0 到 360。例如：红色：0，青色：200，蓝绿色：250，粉色：345)

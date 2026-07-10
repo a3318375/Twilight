@@ -97,6 +97,10 @@ export type SiteConfig = {
             src: string;
             // 字体名 (font-family)
             family: string;
+            // 字重
+            weight?: string | number;
+            // 字体样式
+            style?: string;
         };
     };
     // 主题色配置

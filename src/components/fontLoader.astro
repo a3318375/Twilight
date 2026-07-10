@@ -43,6 +43,8 @@ const finalFontFamily = customFontFamily ? `${customFontFamily}, ${fallbacks}` :
                     @font-face {
                         font-family: "${font.family}";
                         src: url("${font.src}");
+                        ${font.weight ? `font-weight: ${font.weight};` : ''}
+                        ${font.style ? `font-style: ${font.style};` : ''}
                         font-display: swap;
                     }
                 `} />
