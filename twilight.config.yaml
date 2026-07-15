@@ -330,7 +330,7 @@ post:
         # 启用评论功能
         enable: true
         # 评论服务提供商（可选，不填则自动检测已配置的服务）
-        provider:
+        provider: "twikoo"
         # Waline 评论系统配置
         waline:
             # 服务端地址
