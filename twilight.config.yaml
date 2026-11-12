@@ -328,7 +328,7 @@ post:
     # 评论配置
     comment:
         # 启用评论功能
-        enable: true
+        enable: false
         # 评论服务提供商（可选，不填则自动检测已配置的服务）
         provider: "twikoo"
         # Waline 评论系统配置
